@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs').promises;
+const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,8 +15,17 @@ app.get('/', (_request, response) => {
 });
 
 app.get('/talker', async (_req, res) => {
-    const infos = await fs.readFile(talker, 'utf8');
-    res.status(200).json(JSON.parse(infos));
+  const infos = JSON.parse(fs.readFileSync(talker, 'utf8'));
+    res.status(200).json(infos);
+});
+
+app.get('/talker/:id', (req, res) => {
+  const { id } = req.params;
+  const infos = JSON.parse(fs.readFileSync(talker, 'utf8'));
+  const result = infos.find((r) => r.id === Number(id));
+  if (!result) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+
+  res.status(200).json(result);
 });
 
 app.listen(PORT, () => {
