@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const talker = './talker.json';
+const { validations } = require('./middlewares/validations');
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -38,7 +39,7 @@ app.get('/talker/:id', (req, res) => {
   res.status(200).json(result);
 });
 
-app.post('/login', (_req, res) => {
+app.post('/login', validations, (_req, res) => {
   res.status(200).json({ token: geraStringAleatoria(16) });
 });
 
