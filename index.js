@@ -8,7 +8,13 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const talker = './talker.json';
-const validations = require('./middlewares/validations');
+const { validationsLogin,
+  validationsToken,
+  validationsName,
+  validationsAge,
+  validationsTalk,
+  validationsWatchedAt,
+  validationsRate } = require('./middlewares/validations');
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -40,8 +46,30 @@ app.get('/talker/:id', async (req, res) => {
   res.status(200).json(result);
 });
 
-app.post('/login', validations, (_req, res) => {
+app.post('/login', validationsLogin, (_req, res) => {
   res.status(200).json({ token: geraStringAleatoria(16) });
+});
+
+app.post('/talker', validationsToken,
+  validationsName,
+  validationsAge,
+  validationsTalk,
+  validationsWatchedAt,
+  validationsRate, async (req, res) => {
+  const infos = await fs.readFile(talker, 'utf8');
+  const infoJson = JSON.parse(infos);
+  const { name, age, talk } = req.body;
+
+  const newTalker = {
+    id: infoJson.length + 1,
+    name,
+    age,
+    talk,
+  };
+  infoJson.push(newTalker);
+  await fs.writeFile(talker, JSON.stringify(infoJson));
+  
+  res.status(201).json(newTalker);
 });
 
 app.listen(PORT, () => {
