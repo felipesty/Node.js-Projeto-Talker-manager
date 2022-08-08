@@ -21,7 +21,7 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-// função geraStringAleatoria encurtador.com.br/pqKY8
+// função geraStringAleatoria https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
 function geraStringAleatoria(tamanho) {
   let stringAleatoria = '';
   const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -70,6 +70,26 @@ app.post('/talker', validationsToken,
   await fs.writeFile(talker, JSON.stringify(infoJson));
   
   res.status(201).json(newTalker);
+});
+
+app.put('/talker/:id', validationsToken,
+validationsName,
+validationsAge,
+validationsTalk,
+validationsWatchedAt,
+validationsRate, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+  const infos = await fs.readFile(talker, 'utf8');
+  const infoJson = JSON.parse(infos);
+  const result = infoJson.findIndex((r) => r.id === Number(id));
+
+  const update = { ...infoJson[result], name, age, talk };
+  infoJson[result] = update;
+
+  await fs.writeFile(talker, JSON.stringify(infoJson));
+  
+  res.status(200).json(update);
 });
 
 app.listen(PORT, () => {
