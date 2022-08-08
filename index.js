@@ -92,6 +92,18 @@ validationsRate, async (req, res) => {
   res.status(200).json(update);
 });
 
+app.delete('/talker/:id', validationsToken, async (req, res) => {
+  const { id } = req.params;
+  const infos = await fs.readFile(talker, 'utf8');
+  const infoJson = JSON.parse(infos);
+  const result = infoJson.findIndex((r) => r.id === Number(id));
+
+  const erase = infoJson.slice(result, 1);
+  await fs.writeFile(talker, JSON.stringify(erase));
+
+  res.status(204).json(infoJson);
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
