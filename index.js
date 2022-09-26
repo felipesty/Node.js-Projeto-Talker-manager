@@ -104,6 +104,17 @@ app.delete('/talker/:id', validationsToken, async (req, res) => {
   res.status(204).json(infoJson);
 });
 
+app.get('/talker/search?q=searchTerm', async (req, res) => {
+  const infos = await fs.readFile(talker, 'utf8');
+  const infoJson = JSON.parse(infos);
+  const { name } = req.query;
+
+  const result = infoJson.filter((r) => r.name.includes(name));
+  await fs.writeFile(talker, JSON.stringify(result));
+
+  res.status(200).json(result);
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
