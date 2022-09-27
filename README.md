@@ -1,4 +1,4 @@
-# Projeto One for all
+# Projeto Talker manager
 Primeiro projeto utilizando o Node, onde foi preciso botar em prática os conhecimentos adquiridos com Node, API rest com o express e também dos middlewares para fazer as seguintes endpoints:
    - GET /talker
    - GET /talker/:id
